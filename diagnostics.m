@@ -1,4 +1,5 @@
 %diagnostics at an interval of dt*ndskip
+num_v = 100;
 if mod(jtime,ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   energy;
   % figure of xy plot
@@ -67,6 +68,27 @@ if mod(jtime,ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   ax6.XLim = [0, 20]; ax6.YLim = [0, 20]; ax6.ZLim = [0, 0.04];
 
   writeVideo(v_kxkyEorB, frames_kxky);
+
+  f_velocitydist = figure(4); f_kxky.Position = [1200, 600, 1000, 750];
+  frames_velocitydist = getframe(f_velocitydist);
+
+  ax1 = subplot(1, 1, 1);
+  h = histogram2(vx, sqrt(vy.*vy + vz.*vz));
+  h.XBinLimits = [-1*cv, cv];
+  h.YBinLimits = [0, cv];
+  h.NumBins = [2*num_v, num_v];
+
+  editableHistgram = h.Values;
+
+  editableHistgram = editableHistgram ./ [1:num_v];
+  editableHistgram = editableHistgram';
+  im = image(editableHistgram);
+  im.Parent = ax1;
+  im.CDataMapping = 'scaled';
+
+  ax1.XLabel.String = 'v_para'; ax5.YLabel.String = 'v_perp';
+
+  writeVideo(v_velocitydist, frames_velocitydist);
 end
 
 % Diagnostics at the end of the job
