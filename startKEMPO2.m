@@ -36,7 +36,7 @@ v_velocitydist.FrameRate = 30;
 open(v_velocitydist);
 
 cd(currentFolder)
-
+tic;  
 for itime = 1:ntime
   jtime = jtime +1;
   bfield;

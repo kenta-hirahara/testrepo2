@@ -63,24 +63,28 @@ if mod(jtime,ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   writeVideo(v_kxkyEorB, frames_kxky);
 
   % figure of velocity distribution plot
-  f_velocitydist = figure(3); f_velocitydist.Position = [1200, 600, 1000, 750];
-  frames_velocitydist = getframe(f_velocitydist);
-  ax = axes();
   h = histogram2(vx, sqrt(vy.*vy + vz.*vz));
   h.XBinLimits = [-1*cv, cv];
   h.YBinLimits = [0, cv];
   h.NumBins = [2*num_v, num_v];
-
   editableHistgram = h.Values;
+  h.Visible = 'off';
   div = 2*[1:num_v] - 1;
   editableHistgram = editableHistgram ./ (pi*((cv/num_v)^3) * div);
 
+  f_velocitydist = figure(3); f_velocitydist.Position = [1200, 600, 1000, 750];
+  frames_velocitydist = getframe(f_velocitydist);
+
+  % ax = axes();
+  % ax.Parent = f_velocitydist;
+  % ax.XLabel.String = 'v_{perp}'; ax.YLabel.String = 'v_{para}';
+
   im = surfc(editableHistgram);
-  im.Parent = ax;
+  % im.Parent = ax;
   % im.CDataMapping = 'scaled';
-  ax.XLabel.String = 'v_{perp}'; ax.YLabel.String = 'v_{para}';
   writeVideo(v_velocitydist, frames_velocitydist);
 end
+
 % Diagnostics at the end of the job
 %  plotting time history of energies
 if itime == ntime
