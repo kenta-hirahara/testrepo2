@@ -63,36 +63,29 @@ if mod(jtime,ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   writeVideo(v_kxkyEorB, frames_kxky);
 
   % figure of velocity distribution plot
-  n2 = 0;
-  for  k=1:ns
-    n1 = n2 + 1;
-    n2 = n2 + np(k);
-    i = n1:n2
-    f_velocitydist = figure(2+k); f_velocitydist.Position = [1200, 600, 1000, 750];
-    frames_velocitydist = getframe(f_velocitydist);
-    ax = axes();
-    h = histogram2(vx(i), sqrt(vy(i).*vy(i) + vz(i).*vz(i)));
-    h.XBinLimits = [-1*cv, cv];
-    h.YBinLimits = [0, cv];
-    h.NumBins = [2*num_v, num_v];
+  f_velocitydist = figure(3); f_velocitydist.Position = [1200, 600, 1000, 750];
+  frames_velocitydist = getframe(f_velocitydist);
+  ax = axes();
+  h = histogram2(vx, sqrt(vy.*vy + vz.*vz));
+  h.XBinLimits = [-1*cv, cv];
+  h.YBinLimits = [0, cv];
+  h.NumBins = [2*num_v, num_v];
 
-    editableHistgram = h.Values;
-    div = 2*[1:num_v] - 1;
-    editableHistgram = editableHistgram ./ (pi*((cv/num_v)^3) * div);
+  editableHistgram = h.Values;
+  div = 2*[1:num_v] - 1;
+  editableHistgram = editableHistgram ./ (pi*((cv/num_v)^3) * div);
 
-    im = surfc(editableHistgram);
-    im.Parent = ax;
-    % im.CDataMapping = 'scaled';
-    ax.XLabel.String = 'v_{perp}'; ax.YLabel.String = 'v_{para}';
-    writeVideo(v_velocitydist, frames_velocitydist);
-  end
-  
+  im = surfc(editableHistgram);
+  im.Parent = ax;
+  % im.CDataMapping = 'scaled';
+  ax.XLabel.String = 'v_{perp}'; ax.YLabel.String = 'v_{para}';
+  writeVideo(v_velocitydist, frames_velocitydist);
 end
 % Diagnostics at the end of the job
 %  plotting time history of energies
 if itime == ntime
   % fign_xy = fign_xy+1;
-  figure(7);
+  figure(5);
   frame = getframe(gcf);
 IT=(1:it);
   pt = IT*dt*ndskip;
@@ -106,7 +99,7 @@ IT=(1:it);
   title('Energy History');
   %plotting time history of temperature anisotropy
   % fign_xy = fign_xy+1;
-  figure(8);
+  figure(6);
   plot(pt,At), xlabel('Time'),ylabel('Temperature Anisotropy');
   if ns==2
       legend ('sp1','sp2');
