@@ -1,5 +1,5 @@
 %diagnostics at an interval of dt*ndskip
-
+xyEB = {ex(X2,Y2)*rne, ey(X2,Y2)*rne, ez(X2,Y2)*rne, (bx(X2,Y2)-bx0)*rnb, (by(X2,Y2)-by0)*rnb, (bz(X2,Y2)-bz0)*rnb}; %これは全プロットで使うのでここに固定
 if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   energy;
   % figure of xy plot
@@ -8,53 +8,20 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     set(0,'DefaultFigureColormap',jet)
     frames_xy = getframe(f_xy);
 
-    ax1 = subplot(2, 3, 1); surf(ex(X2,Y2)'*rne)
-    ax1.XLabel.String = 'X'; ax1.YLabel.String = 'Y'; ax1.ZLabel.String = 'Ex';
-    ax1.XLim = [0, 20]; ax1.YLim = [0, 20]; ax1.ZLim = [-4, 4];
-    if mod(jtime, 10) == 0 
-      ax1.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax1.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-    end
-    ax2 = subplot(2, 3, 2); surf(ey(X2,Y2)'*rne)
-    ax2.XLabel.String = 'X'; ax2.YLabel.String = 'Y'; ax2.ZLabel.String = 'Ey';
-    ax2.XLim = [0, 20]; ax2.YLim = [0, 20]; ax2.ZLim = [-4, 4];
-    if mod(jtime, 10) == 0 
-      ax2.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax2.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-    end
-    ax3 = subplot(2, 3, 3); surf(ez(X2,Y2)'*rne)
-    ax3.XLabel.String = 'X'; ax3.YLabel.String = 'Y'; ax3.ZLabel.String = 'Ez';
-    ax3.XLim = [0, 20]; ax3.YLim = [0, 20]; ax3.ZLim = [-4, 4];
-    if mod(jtime, 10) == 0 
-      ax3.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax3.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-    end
-    ax4 = subplot(2, 3, 4); surf((bx(X2,Y2)-bx0)'*rnb)
-    ax4.XLabel.String = 'X'; ax4.YLabel.String = 'Y'; ax4.ZLabel.String = 'Bx';
-    ax4.XLim = [0, 20]; ax4.YLim = [0, 20]; ax4.ZLim = [-0.5, 1];
-    if mod(jtime, 10) == 0 
-      ax4.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax4.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-    end
-    ax5 = subplot(2, 3, 5); surf((by(X2,Y2)-by0)'*rnb)
-    ax5.XLabel.String = 'X'; ax5.YLabel.String = 'Y'; ax5.ZLabel.String = 'By';
-    ax5.XLim = [0, 20]; ax5.YLim = [0, 20]; ax5.ZLim = [-0.5, 1];
-    if mod(jtime, 10) == 0 
-      ax5.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax5.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-    end
-    ax6 = subplot(2, 3, 6); surf((bz(X2,Y2)-bz0)'*rnb)
-    ax6.XLabel.String = 'X'; ax6.YLabel.String = 'Y'; ax6.ZLabel.String = 'Bz';
-    ax6.XLim = [0, 20]; ax6.YLim = [0, 20]; ax6.ZLim = [-0.5, 1];
-    if mod(jtime, 10) == 0 
-      ax6.Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-    else
-      ax6.Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
+    for k =1:6
+      ax(k) = subplot(2, 3, k);surf(cell2mat(xyEB(k))');
+      ax(k).XLabel.String = 'X'; ax(k).YLabel.String = 'Y'; ax(k).ZLabel.String = cell2mat(EBstring(k));
+      ax(k).XLim = [0, 20]; ax(k).YLim = [0, 20];
+      if k <= 3
+        ax(k).ZLim = [-4, 4];
+      else
+        ax(k).ZLim = [-0.5, 1];
+      end
+      if mod(jtime, 10) == 0 
+        ax(k).Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)];
+      else
+        ax(k).Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)];
+      end
     end
     writeVideo(v_xyEorB, frames_xy);
   end
@@ -64,25 +31,39 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     f_kxky = figure(2); f_kxky.Position = [0, 0, 1000, 750];
     frames_kxky = getframe(f_kxky);
 
-    ax1 = subplot(2, 3, 1); plot_kxkyEx
-    ax1.XLabel.String = 'kx'; ax1.YLabel.String = 'ky'; ax1.ZLabel.String = 'Ex';
-    ax1.XLim = [0, 20]; ax1.YLim = [0, 20]; ax1.ZLim = [0, 0.8];
-    ax2 = subplot(2, 3, 2); plot_kxkyEy
-    ax2.XLabel.String = 'kx'; ax2.YLabel.String = 'ky'; ax2.ZLabel.String = 'Ey';
-    ax2.XLim = [0, 20]; ax2.YLim = [0, 20]; ax2.ZLim = [0, 0.3];
-    ax3 = subplot(2, 3, 3); plot_kxkyEz  
-    ax3.XLabel.String = 'kx'; ax3.YLabel.String = 'ky'; ax3.ZLabel.String = 'Ez';
-    ax3.XLim = [0, 20]; ax3.YLim = [0, 20]; ax3.ZLim = [0, 0.3];
-    ax4 = subplot(2, 3, 4); plot_kxkyBx
-    ax4.XLabel.String = 'kx'; ax4.YLabel.String = 'ky'; ax4.ZLabel.String = 'Bx';
-    ax4.XLim = [0, 20]; ax4.YLim = [0, 20]; ax4.ZLim = [0, 0.04];
-    ax5 = subplot(2, 3, 5); plot_kxkyBy
-    ax5.XLabel.String = 'kx'; ax5.YLabel.String = 'ky'; ax5.ZLabel.String = 'By';
-    ax5.XLim = [0, 20]; ax5.YLim = [0, 20]; ax5.ZLim = [0, 0.04];
-    ax6 = subplot(2, 3, 6); plot_kxkyBz
-    ax6.XLabel.String = 'kx'; ax6.YLabel.String = 'ky'; ax6.ZLabel.String = 'Bz';
-    ax6.XLim = [0, 20]; ax6.YLim = [0, 20]; ax6.ZLim = [0, 0.04];
+    nxh = nx/2;
+    nyh = ny/2;
+    nkmax = 20;
     
+    for k =1:6
+      Z = zeros(nxh, nyh);
+      Y = fft2(cell2mat(xyEB(k)), nx,ny)/(nx*ny);    
+      for j =2:nyh
+        for i = 2:nxh
+          Z(i,j)= abs(Y(i,j)) + abs(Y(nx-i+2, ny-j+2));
+        end
+      end
+      for j = 2:nyh
+        Z(1,j) =abs(Y(1,j)) + abs(Y(1,ny-j+2));
+      end
+      for i = 2:nxh
+        Z(i,1) = abs(Y(i,1)) + abs(Y(nx-i+2,1));
+      end
+      Z(1,1) = abs(Y(1,1)); 
+      KK = 1:nkmax+1;
+      NXP = 0:nkmax;
+      NYP = 0:nkmax;
+      ax(k) = subplot(2, 3, k); sc = surfc(Z(KK,KK)');
+      sc(1).XData = NXP; sc(1).YData = NYP;
+      ax(k).XLim = [0, 20]; ax(k).YLim = [0, 20]; 
+      if k <= 3
+        ax(k).ZLim = [0, 0.6];
+      else
+        ax(k).ZLim = [0, 0.04];
+      end
+      ax(k).XLabel.String = 'kx(mode)'; ax(k).YLabel.String = 'ky(mode)';
+      ax(k).ZLabel.String = cell2mat(EBstring(k));
+    end
     writeVideo(v_kxkyEorB, frames_kxky);
   end
 
