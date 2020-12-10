@@ -1,8 +1,12 @@
 currentFolder = pwd;
 
-addpath('./params/');
-[filename,path] = uigetfile('./params/*.mat');
-load(filename);
+% GUIから実行する場合はこれ以降5行をコメントアウト
+
+% addpath('./params/');
+% [filename,path] = uigetfile('./params/*.mat');
+% load(filename);
+% fileWithStartTime = strtok(filename, '.');
+% fileOnlyAlphabet = strtok(filename, '_');
 
 if(jobnumber == 1) 
   renormalization;
@@ -11,31 +15,36 @@ if(jobnumber == 1)
   charge;
   potential;
   energy;
-end
+end  
 
-% if app.videoPathSpecified == 1
-%   cd(app.saveVideoFile)
-% else
-%   cd(currentFolder)
-% end
-    %  fileWithStartTime = 'shNgi_0';       
-fileWithStartTime = strtok(filename, '.');
-fileOnlyAlphabet = strtok(filename, '_');
+xyEorBplot = 1;
+kxkyPlot = 1;
+velocityDistPlot = 1;
+EJplot = 1;
+
 endTime = startTime + ntime;
 
 v_xyEorB = VideoWriter(strcat(fileWithStartTime, '_xy_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_xyEorB.FrameRate = 30;
+v_xyEorB.FrameRate = floor(ntime/ndskip/100);
 open(v_xyEorB);
 
 v_kxkyEorB = VideoWriter(strcat(fileWithStartTime, '_kxky_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_kxkyEorB.FrameRate = 30;
+v_kxkyEorB.FrameRate = floor(ntime/ndskip/100);
 open(v_kxkyEorB);
 
 v_velocitydist = VideoWriter(strcat(fileWithStartTime, '_velocitydist_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_velocitydist.FrameRate = 30;
+v_velocitydist.FrameRate = floor(ntime/ndskip/100);
 open(v_velocitydist);
 
-cd(currentFolder)
+num_v = 40;
+dv = cv/num_v;
+div = 2*[1:num_v+1]-1;
+para = -1*cv:dv:cv;
+perp = 0:dv:cv;
+zmax = zeros(1,ns);
+% skipNumber = 4;
+
+cd(currentFolder);
 tic;  
 for itime = 1:ntime
   jtime = jtime +1;
@@ -48,7 +57,7 @@ for itime = 1:ntime
   efield;
   charge;
   potential;
-  diagnos;
+  diagnostics;
 end
 
 jobnumber = jobnumber + 1;
@@ -61,8 +70,7 @@ startTime = endTime;
 %   cd(currentFolder)
 % end
 close(v_xyEorB);
-close(v_kxkyEorB);
+% close(v_kxkyEorB);
 close(v_velocitydist);
 toc;
-cd(currentFolder)
-
+cd(currentFolder);
