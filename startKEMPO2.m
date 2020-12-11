@@ -18,9 +18,9 @@ if(jobnumber == 1)
 end  
 
 EBstring = {'Ex', 'Ey', 'Ez', 'Bx', 'By', 'Bz'};
-xyEorBplot = 1;
+xyEorBplot = 0;
 kxkyPlot = 0;
-velocityDistPlot = 0;
+velocityDistPlot = 1;
 EJplot = 1;
 
 endTime = startTime + ntime;
@@ -46,6 +46,7 @@ dv = cv/num_v;
 div = 2*[1:num_v+1]-1;
 para = -1*cv:dv:cv;
 perp = 0:dv:cv;
+global zmax
 zmax = zeros(1,ns);
 % skipNumber = 4;
 

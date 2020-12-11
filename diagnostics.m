@@ -7,7 +7,6 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     f_xy = figure(1); f_xy.Position = [0, 0, 1000, 750];
     set(0,'DefaultFigureColormap',jet)
     frames_xy = getframe(f_xy);
-
     for k =1:6
       plot_xy(xyEB, k, EBstring, jtime, ntime ,dt)
     end
@@ -55,25 +54,26 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     frames_velocitydist = getframe(editedVelocityDist);
     
     for k=1:ns
-      ax(k) = subplot(1, 2, k); surfaceHist= surf(cell2mat(editableHistogram(1, k)));
+      plot_velocityDist(editableHistogram, k, perp, para, cv, jtime, ndskip, dt, ntime)
+      % ax(k) = subplot(1, 2, k); surfaceHist= surf(cell2mat(editableHistogram(1, k)));
 
-      surfaceHist.XData = perp;
-      surfaceHist.YData = para;
-      % surfaceHist.LevelList = 200;
+      % surfaceHist.XData = perp;
+      % surfaceHist.YData = para;
+      % % surfaceHist.LevelList = 200;
       
-      if jtime == ndskip
-        zmax(k) = max(cell2mat(editableHistogram(1, k)), [], 'all'); 
-        % sprintf( 'zmax(%d) is %d', k, zmax(k))
-      end
-      % sprintf( '[0, zmax(%d)] is %d  %d', k, 0, zmax(k))
-      ax(k).XLim = [0, cv]; ax(k).YLim = [-1*cv, cv]; ax(k).ZLim = [0, zmax(k)];
-      ax(k).XLabel.String = 'v_{perp}'; ax(k).YLabel.String = 'v_{para}';
+      % if jtime == ndskip
+      %   zmax(k) = max(cell2mat(editableHistogram(1, k)), [], 'all'); 
+      %   % sprintf( 'zmax(%d) is %d', k, zmax(k))
+      % end
+      % % sprintf( '[0, zmax(%d)] is %d  %d', k, 0, zmax(k))
+      % ax(k).XLim = [0, cv]; ax(k).YLim = [-1*cv, cv]; ax(k).ZLim = [0, zmax(k)];
+      % ax(k).XLabel.String = 'v_{perp}'; ax(k).YLabel.String = 'v_{para}';
       
-      if mod(jtime, 10) == 0 
-        ax(k).Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-      else
-        ax(k).Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-      end
+      % if mod(jtime, 10) == 0 
+      %   ax(k).Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
+      % else
+      %   ax(k).Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
+      % end
     end
     writeVideo(v_velocitydist, frames_velocitydist);
   end
@@ -90,7 +90,7 @@ if itime == ntime
   % fign_xy = fign_xy+1;
   figure(5);
   frame = getframe(gcf);
-IT=(1:it);
+  IT=(1:it);
   pt = IT*dt*ndskip;
   if ns==2
     semilogy(pt, engt, pt, eepara,pt, eeperp,pt,ebpara,pt,ebperp,pt,ke(IT,1),pt,ke(IT,2));
@@ -100,6 +100,7 @@ IT=(1:it);
     legend('total','e-para','e-perp','b-para','b-perp','sp1','sp2','sp3');
   end
   title('Energy History');
+  savefig(strcat('energyHistory_', fileWithStartTime, '.fig'))
   %plotting time history of temperature anisotropy
   % fign_xy = fign_xy+1;
   figure(6);
@@ -109,5 +110,6 @@ IT=(1:it);
   elseif ns ==3
       legend('sp1','sp2', 'sp3');
   end
+  savefig(strcat('Anisotropy_', fileWithStartTime, '.fig'))
   % fign_xy = fign_xy-1;
 end; 
