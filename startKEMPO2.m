@@ -18,24 +18,28 @@ if(jobnumber == 1)
 end  
 
 EBstring = {'Ex', 'Ey', 'Ez', 'Bx', 'By', 'Bz'};
-xyEorBplot = 0;
-kxkyPlot = 1;
+xyEorBplot = 1;
+kxkyPlot = 0;
 velocityDistPlot = 0;
 EJplot = 1;
 
 endTime = startTime + ntime;
 
-v_xyEorB = VideoWriter(strcat(fileWithStartTime, '_xy_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_xyEorB.FrameRate = max(1, floor(ntime/ndskip/100));
-open(v_xyEorB);
-
-v_kxkyEorB = VideoWriter(strcat(fileWithStartTime, '_kxky_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_kxkyEorB.FrameRate = max(1, floor(ntime/ndskip/100));
-open(v_kxkyEorB);
-
-v_velocitydist = VideoWriter(strcat(fileWithStartTime, '_velocitydist_', num2str(endTime), '.mp4'), 'MPEG-4');
-v_velocitydist.FrameRate = max(1, floor(ntime/ndskip/100));
-open(v_velocitydist);
+if xyEorBplot
+  v_xyEorB = VideoWriter(strcat(fileWithStartTime, '_xy_', num2str(endTime), '.mp4'), 'MPEG-4');
+  v_xyEorB.FrameRate = max(1, floor(ntime/ndskip/100));
+  open(v_xyEorB);
+end
+if kxkyPlot
+  v_kxkyEorB = VideoWriter(strcat(fileWithStartTime, '_kxky_', num2str(endTime), '.mp4'), 'MPEG-4');
+  v_kxkyEorB.FrameRate = max(1, floor(ntime/ndskip/100));
+  open(v_kxkyEorB);
+end
+if velocityDistPlot
+  v_velocitydist = VideoWriter(strcat(fileWithStartTime, '_velocitydist_', num2str(endTime), '.mp4'), 'MPEG-4');
+  v_velocitydist.FrameRate = max(1, floor(ntime/ndskip/100));
+  open(v_velocitydist);
+end
 
 num_v = 40;
 dv = cv/num_v;
@@ -70,8 +74,14 @@ startTime = endTime;
 % else
 %   cd(currentFolder)
 % end
-close(v_xyEorB);
-% close(v_kxkyEorB);
-close(v_velocitydist);
+if xyEorBplot
+  close(v_xyEorB);
+end
+if kxkyPlot
+  close(v_kxkyEorB);
+end
+if velocityDistPlot
+  close(v_velocitydist);
+end
 toc;
 cd(currentFolder);
