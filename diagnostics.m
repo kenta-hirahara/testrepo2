@@ -36,33 +36,34 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     nkmax = 20;
     
     for k =1:6
-      Z = zeros(nxh, nyh);
-      Y = fft2(cell2mat(xyEB(k)), nx,ny)/(nx*ny);    
-      for j =2:nyh
-        for i = 2:nxh
-          Z(i,j)= abs(Y(i,j)) + abs(Y(nx-i+2, ny-j+2));
-        end
-      end
-      for j = 2:nyh
-        Z(1,j) =abs(Y(1,j)) + abs(Y(1,ny-j+2));
-      end
-      for i = 2:nxh
-        Z(i,1) = abs(Y(i,1)) + abs(Y(nx-i+2,1));
-      end
-      Z(1,1) = abs(Y(1,1)); 
-      KK = 1:nkmax+1;
-      NXP = 0:nkmax;
-      NYP = 0:nkmax;
-      ax(k) = subplot(2, 3, k); sc = surfc(Z(KK,KK)');
-      sc(1).XData = NXP; sc(1).YData = NYP;
-      ax(k).XLim = [0, 20]; ax(k).YLim = [0, 20]; 
-      if k <= 3
-        ax(k).ZLim = [0, 0.6];
-      else
-        ax(k).ZLim = [0, 0.04];
-      end
-      ax(k).XLabel.String = 'kx(mode)'; ax(k).YLabel.String = 'ky(mode)';
-      ax(k).ZLabel.String = cell2mat(EBstring(k));
+      plot_k(xyEB, k, nx, ny, nkmax, EBstring);
+      % Z = zeros(nxh, nyh);
+      % Y = fft2(cell2mat(xyEB(k)), nx,ny)/(nx*ny);    
+      % for j =2:nyh
+      %   for i = 2:nxh
+      %     Z(i,j)= abs(Y(i,j)) + abs(Y(nx-i+2, ny-j+2));
+      %   end
+      % end
+      % for j = 2:nyh
+      %   Z(1,j) =abs(Y(1,j)) + abs(Y(1,ny-j+2));
+      % end
+      % for i = 2:nxh
+      %   Z(i,1) = abs(Y(i,1)) + abs(Y(nx-i+2,1));
+      % end
+      % Z(1,1) = abs(Y(1,1)); 
+      % KK = 1:nkmax+1;
+      % NXP = 0:nkmax;
+      % NYP = 0:nkmax;
+      % ax(k) = subplot(2, 3, k); sc = surfc(Z(KK,KK)');
+      % sc(1).XData = NXP; sc(1).YData = NYP;
+      % ax(k).XLim = [0, 20]; ax(k).YLim = [0, 20]; 
+      % if k <= 3
+      %   ax(k).ZLim = [0, 0.6];
+      % else
+      %   ax(k).ZLim = [0, 0.04];
+      % end
+      % ax(k).XLabel.String = 'kx(mode)'; ax(k).YLabel.String = 'ky(mode)';
+      % ax(k).ZLabel.String = cell2mat(EBstring(k));
     end
     writeVideo(v_kxkyEorB, frames_kxky);
   end
