@@ -18,10 +18,14 @@ if(jobnumber == 1)
 end  
 
 EBstring = {'Ex', 'Ey', 'Ez', 'Bx', 'By', 'Bz'};
+
+% 以降数行はGUIに組み込む
 xyEorBplot = 0;
-kxkyPlot = 0;
-velocityDistPlot = 1;
-EJplot = 1;
+kxkyPlot = 1;
+velocityDistPlot = 0;
+EJplot = 0;
+wkxky = 0;
+% 組み込みここまで
 
 endTime = startTime + ntime;
 

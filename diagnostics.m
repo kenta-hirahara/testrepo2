@@ -18,10 +18,7 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     f_kxky = figure(2); f_kxky.Position = [0, 0, 1000, 750];
     frames_kxky = getframe(f_kxky);
 
-    nxh = nx/2;
-    nyh = ny/2;
     nkmax = 20;
-    
     for k =1:6
       plot_k(xyEB, k, nx, ny, nkmax, EBstring, jtime, ntime, dt);
     end
@@ -55,28 +52,36 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
     
     for k=1:ns
       plot_velocityDist(editableHistogram, k, perp, para, cv, jtime, ndskip, dt, ntime)
-      % ax(k) = subplot(1, 2, k); surfaceHist= surf(cell2mat(editableHistogram(1, k)));
-
-      % surfaceHist.XData = perp;
-      % surfaceHist.YData = para;
-      % % surfaceHist.LevelList = 200;
-      
-      % if jtime == ndskip
-      %   zmax(k) = max(cell2mat(editableHistogram(1, k)), [], 'all'); 
-      %   % sprintf( 'zmax(%d) is %d', k, zmax(k))
-      % end
-      % % sprintf( '[0, zmax(%d)] is %d  %d', k, 0, zmax(k))
-      % ax(k).XLim = [0, cv]; ax(k).YLim = [-1*cv, cv]; ax(k).ZLim = [0, zmax(k)];
-      % ax(k).XLabel.String = 'v_{perp}'; ax(k).YLabel.String = 'v_{para}';
-      
-      % if mod(jtime, 10) == 0 
-      %   ax(k).Title.String = ['time = ',num2str(floor(jtime*dt)), '/', num2str(ntime*dt)]
-      % else
-      %   ax(k).Title.String = ['time = ',num2str(floor((jtime-mod(jtime, 10))*dt)), '/', num2str(ntime*dt)]
-      % end
     end
     writeVideo(v_velocitydist, frames_velocitydist);
   end
+  % figure of w-kx-ky diagram
+  if wkxky
+    f_wkxky = figure(5);
+    f_wkxky.Position = [100, 100, 1000, 700]
+
+    kxkyt = zeros(nkmax+1, nkmax+1, ntime)
+    for i=1:ntime
+      Z = zeros(nx/2, ny/2);
+      Y = abs(fft2(cell2mat(xyEB(k)), nx,ny)) / (nx*ny); 
+      for j =2:ny/2
+        for i = 2:nx/2
+          Z(i,j)= Y(i,j) + Y(nx-i+2, ny-j+2);
+        end
+      end 
+      for j = 2:ny/2
+        Z(1,j) = Y(1,j) + Y(1,ny-j+2);
+      end
+      for i = 2:nx/2
+        Z(i,1) = Y(i,1) + Y(nx-i+2,1);
+      end
+      Z(1,1) = Y(1,1); 
+      KK = 1:nkmax+1;
+      kykxt(i) = Z(KK,KK); %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
+    end
+    % 以降で時間方向にfft
+    kxkyw = fft(kxkyt, ntime, 3);
+
 
   % figure of EJ plot
   % if EJplot
@@ -88,7 +93,7 @@ end
 %  plotting time history of energies
 if itime == ntime
   % fign_xy = fign_xy+1;
-  figure(5);
+  figure(8);
   frame = getframe(gcf);
   IT=(1:it);
   pt = IT*dt*ndskip;
@@ -103,7 +108,7 @@ if itime == ntime
   savefig(strcat('energyHistory_', fileWithStartTime, '.fig'))
   %plotting time history of temperature anisotropy
   % fign_xy = fign_xy+1;
-  figure(6);
+  figure(9);
   plot(pt,At), xlabel('Time'),ylabel('Temperature Anisotropy');
   if ns==2
       legend ('sp1','sp2');
