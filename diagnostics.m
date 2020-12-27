@@ -3,33 +3,33 @@ xyEB = {ex(X2,Y2)*rne, ey(X2,Y2)*rne, ez(X2,Y2)*rne, (bx(X2,Y2)-bx0)*rnb, (by(X2
 if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   energy;
   % figure of xy plot
-  if xyEorBplot
+  if app.xyExyBCheckBox.Value
     f_xy = figure(2001);
     f_xy.Name = 'xy plot';
     f_xy.Position = [0, 0, 1000, 750];
     set(0,'DefaultFigureColormap',jet);
     frames_xy = getframe(f_xy);
     for k =1:6
-      plot_xy(xyEB, k, EBstring, jtime, ntime ,dt);
+      plot_xy(xyEB, k, app.EBstring, jtime, ntime ,dt);
     end
     writeVideo(v_xyEorB, frames_xy);
   end
 
-  % fxigure of kxky plot
-  if kxkyPlot
+  % figure of kxky plot
+  if app.kxkyEkxkyBCheckBox.Value
     f_kxky = figure(2);
     f_kxky.Name = 'kxky plot';
     f_kxky.Position = [0, 0, 1000, 750];
     frames_kxky = getframe(f_kxky);
 
     for k =1:6 %つまりE, Bの全成分プロット
-      plot_k(xyEB, k, nx, ny, nkmax, EBstring, jtime, ntime, dt);
+      plot_k(xyEB, k, nx, ny, nkmax, app.EBstring, jtime, ntime, dt);
     end
     writeVideo(v_kxkyEorB, frames_kxky);
   end
 
   % figure of velocity distribution plot
-  if velocityDistPlots
+  if app.veloDistCheckBox.Value
     f_velocitydist = figure(3);
     f_velocitydist.Position = [0, 0, 0, 0];
     
@@ -67,16 +67,16 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
 end
 
 % figure of w-kx-ky diagram
-if wkxky
+if app.wkxkyCheckBox.Value
   % Z = zeros(nx/2, ny/2);
-  kxkyt(:, :, itime) = abs(fft2(cell2mat(xyEB(number)), nx, ny)) / (nx*ny); %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
+  kxkyt(:, :, itime) = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny); %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
 end
 
 % Diagnostics at the end of the job 
 %  plotting time history of energies
 if itime == ntime
   % fign_xy = fign_xy+1;
-  fig = figure(8);
+  fig = figure(8);a
   fig.Name = 'Energy History and Temperature Anisotropy';
   fig.Position = [0,0,1200,500];
   frame = getframe(gcf);
