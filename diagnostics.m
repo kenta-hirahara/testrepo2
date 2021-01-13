@@ -4,13 +4,13 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   energy;
   % figure of xy plot
   if app.xyExyBCheckBox.Value
-    f_xy = figure(2001);
+    f_xy = figure(1);
     f_xy.Name = 'xy plot';
-    f_xy.Position = [0, 0, 1000, 750];
-    set(0,'DefaultFigureColormap',jet);
+    f_xy.Position = [0, 0, 1400, 750];
+    % set(0,'DefaultFigureColormap',map);
     frames_xy = getframe(f_xy);
     for k =1:6
-      plot_xy(xyEB, k, app.EBstring, jtime, ntime ,dt);
+      plot_xy(xyEB, map, k, app.EBstring, jtime, ntime ,dt);
     end
     writeVideo(v_xyEorB, frames_xy);
   end
@@ -19,11 +19,11 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
   if app.kxkyEkxkyBCheckBox.Value
     f_kxky = figure(2);
     f_kxky.Name = 'kxky plot';
-    f_kxky.Position = [0, 0, 1000, 750];
+    f_kxky.Position = [0, 0, 1400, 750];
     frames_kxky = getframe(f_kxky);
 
     for k =1:6 %つまりE, Bの全成分プロット
-      plot_k(xyEB, k, nx, ny, nkmax, app.EBstring, jtime, ntime, dt);
+      plot_k(xyEB, k, nx, ny, nkmax, map, app.EBstring, jtime, ntime, dt);
     end
     writeVideo(v_kxkyEorB, frames_kxky);
   end
@@ -45,38 +45,40 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
       h(k).XBinLimits = [-1*cv, cv];
       h(k).YBinLimits = [0, cv];
       h(k).NumBins = [2*num_v+1, num_v+1];
-      editableHistogram(1, k) = {h(k).Values};
+      editableHistogram(1, k) = {h(k).Values}; %平行方向は-cvからcv, 垂直は0からcvの[2*num_v+1, num_v+1]行列
       editableHistogram(1, k) = {cell2mat(editableHistogram(1, k)) ./ (pi*((cv/num_v)^3) * div) * abs(q(k))}; 
     end
     close(f_velocitydist);
 
     editedVelocityDist = figure(4);
     editedVelocityDist.Name = 'velocity distributions';
-    editedVelocityDist.Position = [0, 0, 1400, 600];
+    editedVelocityDist.Position = [0, 0, 1000, 900];
     frames_velocitydist = getframe(editedVelocityDist);
         
-    plot_velocityDist(surfORimagesc, editableHistogram, ns, perp, para, cv, jtime, ndskip, dt, ntime);
+    plot_velocityDist(surfORimagesc, editableHistogram, ns, perp, para, cv, jtime, ndskip, dt, ntime ,zmax, map);
     
     writeVideo(v_velocitydist, frames_velocitydist);
   end
   
   % figure of EJ plot
-  % if EJplot
+  % if app.EJCheckBox.Value
     
   % end
 end
 
 % figure of w-kx-ky diagram
-if app.wkxkyCheckBox.Value
+if check.wkxky
   % Z = zeros(nx/2, ny/2);
-  kxkyt(:, :, itime) = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny); %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
-end
+  kxky = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny); 
+  %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
+  kxkyt(:, :, itime) = cat(2, kxky(1:nx/divide_k+1, 1:nx/divide_k+1), kxky(1:nx/divide_k+1, end-nx/divide_k+2:end));
+end 
 
 % Diagnostics at the end of the job 
-%  plotting time history of energies
+% plotting time history of energies
 if itime == ntime
   % fign_xy = fign_xy+1;
-  fig = figure(8);a
+  fig = figure(8);
   fig.Name = 'Energy History and Temperature Anisotropy';
   fig.Position = [0,0,1200,500];
   frame = getframe(gcf);
@@ -91,18 +93,17 @@ if itime == ntime
     legend('total','e-para','e-perp','b-para','b-perp','sp1','sp2','sp3');
   end
   title('Energy History');
-  % savefig(strcat('energyHistory_', fileWithStartTime, '.fig'))
-
   %plotting time history of temperature anisotropy
   % fign_xy = fign_xy+1;
   ax(2) = subplot(1,2,2);
-
   plot(pt,At), xlabel('Time'),ylabel('Temperature Anisotropy');
   if ns==2
       legend ('sp1','sp2');
   elseif ns ==3
       legend('sp1','sp2', 'sp3');
   end
-  savefig(strcat('energy_anisotropy_', fileWithStartTime, '.fig'));
+  energyAndAnisFigName = strcat('energy_anisotropy_', fileWithoutDotM, '.fig');
+  savefig(fig, energyAndAnisFigName);
+  movefile(energyAndAnisFigName, newDirAbsolutePath);
   % fign_xy = fign_xy-1;
 end; 
