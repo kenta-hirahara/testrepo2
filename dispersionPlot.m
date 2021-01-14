@@ -1,8 +1,12 @@
 % 以降で時間方向にfft
-kxkyw = abs(fftn(kxkyt, ntime, 3));
+kxkyw = abs(fft(kxkyt, ntime, 3));
+clear kxkyt;
 kxkyw = log10(kxkyw);
 kxkyw = fftshift(kxkyw, 2);
 kxkyw = fftshift(kxkyw, 3);
+kxkywMatFilename = 'kxkyw.mat';
+save(kxkywMatFilename, 'kxkyw', '-v7.3');
+movefile(kxkywMatFilename, newDirAbsolutePath);
 % disp(size(kxkyw))
 % kmax = 2*pi/dx / 2;
 wmax = 0.5*pi;
@@ -44,6 +48,9 @@ ax(2).YLabel.String = '\omega';
 ax(2).XLim = [0,30];
 ax(2).YLim = [0,30];
 
+dispersionParallelFigName = strcat('dispersionParallel_', fileWithoutDotM, '.fig');
+savefig(fig, dispersionParallelFigName);
+movefile(dispersionParallelFigName, newDirAbsolutePath);
 % % 斜め伝搬ここから
 % krw = zeros(21, size(kxkyw, 3));
 % [kyDispersion, kxDispersion] = meshgrid(ky_axis, kx_axis);
@@ -66,7 +73,7 @@ im_krw = imagesc(krw');
 colormap(map); colorbar; shading flat;
 ax.XLabel.String = 'k(mode)'; ax.YLabel.String = '\omega';
 ax.YDir = 'normal';
-ax.Title.String = sprintf('%3.3f degree oblique mode', rad2deg(atan(kx_div_ky)));
+ax.Title.String = sprintf('%s \n %3.3f degree oblique mode', cell2mat(app.EBstring(app.EBnumber)), rad2deg(atan(kx_div_ky)));
 % xDispersion = [0:dkx:20]*cos(deg2rad(thetaDispersion));
 % yDispersion = [0:dkx:20]*sin(deg2rad(thetaDispersion));
 % for i=1:size(kxkyw, 3)

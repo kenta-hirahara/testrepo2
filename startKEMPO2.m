@@ -12,6 +12,10 @@ newDirAbsolutePath = [currentFolder '/pastJobs/' startSimulationDatetime];
 addpath(newDirAbsolutePath);
 cd(currentFolder);
 
+inputParamMatFilename = 'inputParam.mat';
+save(inputParamMatFilename, 'inputParam', '-v7.3');
+movefile(inputParamMatFilename, newDirAbsolutePath);
+
 disp('Simulation started'); 
 addpath('./colormap');
 map = colormapTurbo;
@@ -51,12 +55,14 @@ asterisk = '*';
 parameterFileForContiniusJob = ['_jobnum' num2str(jobnumber) '_' startSimulationDatetime '.mat'];
 paramEJ.spName = {'All Species', 'Species 1', 'Species 2', 'Species 3', 'Species 4'};
 paramEJ.direction = {'Parallel', 'Perpendicular', 'All directions'};
-if check.wkxky
+% if check.wkxky
   divide_k = 2;
-  dispFilename = ['dispersionData' cell2mat(app.EBstring(app.EBnumber)) '.mat'];
-  dataHDD = matfile(dispFilename, 'Writable',true);
-  dataHDD.kxkyt = zeros(nx/divide_k+1, ny*2/divide_k, ntime);
-end
+  % dispFilename = ['dispersionData' cell2mat(app.EBstring(app.EBnumber)) '.mat'];
+  % dataHDD = matfile(dispFilename, 'Writable',true);
+  kxkyt = zeros(nx/divide_k+1, ny*2/divide_k, ntime);
+  % dataHDD.kxkyt = zeros(nx, ny, ntime);
+  % dataHDD.kxkyw = zeros(nx, ny, ntime);
+% end
 % figNumber = 1;
 tic;  
 for itime = 1:ntime
@@ -74,18 +80,21 @@ for itime = 1:ntime
   charge;
   potential;
   diagnostics;
-  if mod(itime, floor(ntime/10))==0
-    disp(asterisk)
-    asterisk = [asterisk, '*'];
-    if size(asterisk, 2)==6
-      asterisk = '*';
-    end
-  end
-end
+  % if mod(itime, floor(ntime/10))==0
+  %   disp(asterisk)
+  %   asterisk = [asterisk, '*'];
+  %   if size(asterisk, 2)==6
+  %     asterisk = '*';
+  %   end
+  % end
+  timeDisp = sprintf('Time = %10.3f / %10.3f', jtime*dt, ntime*dt);
+  disp(timeDisp);
+end 
+kxkytMatFilename = 'kxkyt.mat';
+save(kxkytMatFilename, 'kxkyt', '-v7.3');
+movefile(kxkytMatFilename, newDirAbsolutePath);
 
 if check.wkxky
-  % save('kxkyt.mat', 'kxkyt', '-v7.3');
-  movefile(dispFilename, newDirAbsolutePath);
   disp('Culculating For Dispersion Plot');
   dispersionPlot;
 end

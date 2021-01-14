@@ -67,12 +67,12 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
 end
 
 % figure of w-kx-ky diagram
-if check.wkxky
+% if check.wkxky
   % Z = zeros(nx/2, ny/2);
   kxky = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny); 
   %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
   kxkyt(:, :, itime) = cat(2, kxky(1:nx/divide_k+1, 1:nx/divide_k+1), kxky(1:nx/divide_k+1, end-nx/divide_k+2:end));
-end 
+% end 
 
 % Diagnostics at the end of the job 
 % plotting time history of energies
