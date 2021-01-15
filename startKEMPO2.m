@@ -37,8 +37,6 @@ if(jobnumber == 1)
 end  
 
 nkmax = 50; 
-surfORimagesc = 1;
-
 endTime = startTime + ntime;
 
 openVideos;
@@ -48,10 +46,8 @@ dv = cv/num_v;
 div = 2*[1:num_v+1]-1;
 para = [-1*cv:dv:cv]*rnv;
 perp = [0:dv:cv]*rnv;
-global zmax
-zmax = zeros(1,ns);
-% skipNumber = 4;
-asterisk = '*';
+global tmp_editedHist
+
 parameterFileForContiniusJob = ['_jobnum' num2str(jobnumber) '_' startSimulationDatetime '.mat'];
 paramEJ.spName = {'All Species', 'Species 1', 'Species 2', 'Species 3', 'Species 4'};
 paramEJ.direction = {'Parallel', 'Perpendicular', 'All directions'};
@@ -80,24 +76,12 @@ for itime = 1:ntime
   charge;
   potential;
   diagnostics;
-  % if mod(itime, floor(ntime/10))==0
-  %   disp(asterisk)
-  %   asterisk = [asterisk, '*'];
-  %   if size(asterisk, 2)==6
-  %     asterisk = '*';
-  %   end
-  % end
   timeDisp = sprintf('Time = %10.3f / %10.3f', jtime*dt, ntime*dt);
   disp(timeDisp);
 end 
 kxkytMatFilename = 'kxkyt.mat';
 save(kxkytMatFilename, 'kxkyt', '-v7.3');
 movefile(kxkytMatFilename, newDirAbsolutePath);
-
-if check.wkxky
-  disp('Culculating For Dispersion Plot');
-  dispersionPlot;
-end
 
 jobnumber = jobnumber + 1;
 startTime = endTime;
@@ -108,9 +92,12 @@ toc;
 
 clear app event im fig ax v_velocitydist f_velocitydist ignoreAxis;
 save(parameterFileForContiniusJob, '-v7.3');
-
-
 movefile(parameterFileForContiniusJob, newDirAbsolutePath);
+
+if check.wkxky
+  disp('Culculating For Dispersion Plot');
+  dispersionPlot;
+end
 
 disp('Successfully Finished. Files are stored to:');
 disp(newDirAbsolutePath);

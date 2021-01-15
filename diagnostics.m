@@ -52,10 +52,13 @@ if mod(jtime, ndskip) == 0 %ndskipつまり8の倍数の時だけ描画
 
     editedVelocityDist = figure(4);
     editedVelocityDist.Name = 'velocity distributions';
-    editedVelocityDist.Position = [0, 0, 1000, 900];
+    editedVelocityDist.Position = [0, 0, 1400, 900];
     frames_velocitydist = getframe(editedVelocityDist);
-        
-    plot_velocityDist(surfORimagesc, editableHistogram, ns, perp, para, cv, jtime, ndskip, dt, ntime ,zmax, map);
+    
+    if jtime == ndskip
+      tmp_editedHist = editableHistogram;
+    end
+    plot_velocityDist(editableHistogram, ns, perp, para, cv, jtime, ndskip, dt, ntime, map, mapEJ, paramEJ.spName);
     
     writeVideo(v_velocitydist, frames_velocitydist);
   end
@@ -69,7 +72,7 @@ end
 % figure of w-kx-ky diagram
 % if check.wkxky
   % Z = zeros(nx/2, ny/2);
-  kxky = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny); 
+  kxky = fft2(cell2mat(xyEB(app.EBnumber)), nx, ny) / (nx*ny) * 4; 
   %ここでk空間の行列の要素数を一気に減らす、これをnplot(ntimeの約数, とりあえずntime)回して格納した. 
   kxkyt(:, :, itime) = cat(2, kxky(1:nx/divide_k+1, 1:nx/divide_k+1), kxky(1:nx/divide_k+1, end-nx/divide_k+2:end));
 % end 

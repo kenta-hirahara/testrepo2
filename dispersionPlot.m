@@ -1,5 +1,5 @@
 % 以降で時間方向にfft
-kxkyw = abs(fft(kxkyt, ntime, 3));
+kxkyw = abs(fft(kxkyt, ntime, 3)/ntime*2);
 clear kxkyt;
 kxkyw = log10(kxkyw);
 kxkyw = fftshift(kxkyw, 2);
@@ -30,7 +30,7 @@ colormap(map); colorbar; shading flat;
 caxis([-5, -2]);
 
 ax(1).YDir='normal';
-ax(1).Title.String = app.EBstring(app.EBnumber);
+ax(1).Title.String = EB.nameInString(EB.number);
 ax(1).XLabel.String = 'kx';
 ax(1).YLabel.String = '\omega';
 ax(1).XLim = [0,30];
@@ -42,7 +42,7 @@ colormap(map);
 caxis([-5, -2]);
 
 ax(2).YDir='normal';
-ax(2).Title.String = app.EBstring(app.EBnumber);
+ax(2).Title.String = EB.nameInString(EB.number);
 ax(2).XLabel.String = 'ky';
 ax(2).YLabel.String = '\omega';
 ax(2).XLim = [0,30];
@@ -57,7 +57,10 @@ movefile(dispersionParallelFigName, newDirAbsolutePath);
 thetaDispersion = 10;
 phi_kSpace = atan(dkx*tan(deg2rad(thetaDispersion))/dky);
 
-kx_div_ky = 1/1; % int/int
+nkx = 1;
+nky = 1;
+kx_div_ky = nkx/nky; % int/int
+ky_div_kx = nky/nkx; % int/int
 krw = zeros(size(kxkyw, 1), size(kxkyw, 3)/2+1); %wの正の部分のみ
 for w=1:size(kxkyw, 3)/2+1
   for i=1:size(kxkyw, 1)

@@ -76,7 +76,8 @@ if ajamp == 0
  ajz(X2,Y2) = ajz(X2,Y2) - ajzu;
 end
 % external current   
-if jtime < ctime
+% if jtime < ctime
 % ajz(nxc , nyc) = ajamp*sin(omega*2*itime); 
+% ajx(nxc , nyc) = ajamp*sin(omega*2*itime); 
 ajz(nxc , :) = ajamp*sin(omega*2*itime); 
-end
+% end

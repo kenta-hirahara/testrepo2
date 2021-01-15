@@ -7,10 +7,10 @@ g = 1.0;
 npt =sum(np(1:ns));
 b0 = wc/qm(1);
 
-costh = cos(theta*pi/180);
-sinth = sin(theta*pi/180);
-cosph = cos(phi  *pi/180);
-sinph = sin(phi  *pi/180);
+costh = cos(deg2rad(theta));
+sinth = sin(deg2rad(theta));
+cosph = cos(deg2rad(phi));
+sinph = sin(deg2rad(phi));
 
 bx0 = b0*sinth*cosph;
 by0 = b0*sinth*sinph;
@@ -69,7 +69,7 @@ n2 = 0;
 for  k=1:ns
   n1 = n2 + 1;
   n2 = n2 + np(k);
-  pchr = pi/180.0*pch(k);
+  pchr = deg2rad(pch(k));
   vdpa = vd(k)*cos(pchr);
   vdpe = vd(k)*sin(pchr);
 
@@ -86,7 +86,7 @@ for  k=1:ns
     uzi = vPara(k)*randn + vdpa; 
     
     % rotation to the direction of the magnetic field
-    %座標変換しているので、uxが磁場に平行なx成分に必ずなるはず
+    % 座標変換しているので、uxが磁場に平行なx成分に必ずなるはず
     
     ux = uxi*costh*cosph - uyi*sinph + uzi*sinth*cosph;
     uy = uxi*costh*sinph + uyi*cosph + uzi*sinth*sinph;
@@ -109,7 +109,7 @@ ycen = ylen*0.5;
 %      vy(m) = (y(m) - ycen)*vd(1)/r;
 %   end
 %end   
-%
+
 % Coefficiendts for Poisson Solver
 rkfact = zeros(nx,ny);
 rkxmin = pi/nx;

@@ -29,6 +29,8 @@ check.kxkyPlot = app.kxkyEkxkyBCheckBox.Value;
 check.veloDistPlot = app.veloDistCheckBox.Value;
 check.wkxky = app.wkxkyCheckBox.Value;
 check.EJ = app.EJCheckBox.Value;
+EB.number = app.EBnumber;
+EB.nameInString = app.EBstring; 
 
 inputParam.startTime = app.startTime;
 inputParam.jobnumber = app.jobnumberEditField.Value;

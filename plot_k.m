@@ -1,6 +1,6 @@
 function  plot_k(xyEB, k, nx, ny, nkmax, map, EBstring, jtime, ntime, dt)
   Z = zeros(nx/2, ny/2);
-  Y = abs(fft2(cell2mat(xyEB(k)), nx,ny)) / (nx*ny); % Yはnx行, ny列の行列
+  Y = abs(fft2(cell2mat(xyEB(k)), nx,ny)) / (nx*ny) * 4; % Yはnx行, ny列の行列
   for j =2:ny/2
     for i = 2:nx/2
       Z(i,j)= Y(i,j) + Y(nx-i+2, ny-j+2);
